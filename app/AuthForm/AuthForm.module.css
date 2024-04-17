@@ -1,0 +1,10 @@
+.container_auth {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.authform {
+  margin: 100px 0 100px 0;
+  width: 50%;
+}
