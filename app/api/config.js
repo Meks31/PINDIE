@@ -1,4 +1,4 @@
-export const BASE_URL = 'meksbackend.nomoredomainswork.ru';
+export const BASE_URL = 'https://meksbackend.nomoredomainswork.ru';
 
 export const endpoints = {
   games: `${BASE_URL}/games`,
