@@ -1,1 +1,1 @@
-Мой бэкенд: https://meksbackend.nomoredomainswork.ru/
+Мой бэкенд: https://meksbackend.nomoredomainswork.ru

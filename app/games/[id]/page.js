@@ -36,25 +36,23 @@ export default function GamePage(props) {
   }, [authContext.user, game]);
 
   const handleVote = async () => {
-    const jwt = authContext.token
+    const jwt = authContext.token;
     let usersIdArray = game.users.length
       ? game.users.map((user) => user.id)
       : [];
     usersIdArray.push(authContext.user.id);
-    const response = await vote(
+    await vote(
       `${endpoints.games}/${game.id}`,
       jwt,
       usersIdArray
     );
-    if (isResponseOk(response)) {
-      setGame(() => {
-        return {
-          ...game,
-          users: [...game.users, authContext.user],
-        };
-      });
-      setIsVoted(true);
-    }
+    setGame(() => {
+      return {
+        ...game,
+        users: [...game.users, authContext.user],
+      };
+    });
+    setIsVoted(true);
   };
 
   return (

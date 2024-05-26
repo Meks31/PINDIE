@@ -5,8 +5,9 @@ import { CardsListSection } from "../components/CardsListSection/CardsListSectio
 import { useGetDataByCategory } from "@/app/api/api-hooks";
 import { Preloader } from "@/app/components/Preloader/Preloader";
 
-export default function New() {
-  const tdsGames = useGetDataByCategory(endpoints.games, "TDS");
+export default function TDS() {
+  const games = useGetDataByCategory(endpoints.games);
+  const tdsGames = games?.filter(game => game.categories?.some(category => category.name === 'TDS'));
   return (
     <main className="main-inner">
       {tdsGames ? <CardsListSection id="tds" title="TDS" data={tdsGames} /> : <Preloader />}
