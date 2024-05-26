@@ -46,7 +46,7 @@ export default function GamePage(props) {
       jwt,
       usersIdArray
     );
-    if (!isResponseOk(response)) {
+    if (isResponseOk(response)) {
       setGame(() => {
         return {
           ...game,
