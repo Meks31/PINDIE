@@ -17,6 +17,7 @@ export default function GamePage(props) {
   const [game, setGame] = useState(null);
   const [preloaderVisible, setPreloaderVisible] = useState(true);
   const [isVoted, setIsVoted] = useState(false);
+  const [voteCount, setVoteCount] = useState(0);
   const authContext = useStore();
 
   useEffect(() => {
@@ -25,34 +26,41 @@ export default function GamePage(props) {
         endpoints.games,
         props.params.id
       );
-      isResponseOk(game) ? setGame(game) : setGame(null);
+      if (isResponseOk(game)) {
+        setGame(game);
+        setVoteCount(game.users.length);
+      } else {
+        setGame(null);
+      }
       setPreloaderVisible(false);
     }
     fetchData();
-  }, []);
-  
+  }, [props.params.id]);
+
   useEffect(() => {
-    authContext.user && game ? setIsVoted(checkIfUserVoted(game, authContext.user.id)) : setIsVoted(false);
+    if (authContext.user && game) {
+      setIsVoted(checkIfUserVoted(game, authContext.user.id));
+    } else {
+      setIsVoted(false);
+    }
   }, [authContext.user, game]);
 
   const handleVote = async () => {
     const jwt = authContext.token;
-    let usersIdArray = game.users.length
-      ? game.users.map((user) => user.id)
-      : [];
-    usersIdArray.push(authContext.user.id);
-    await vote(
+    const response = await vote(
       `${endpoints.games}/${game.id}`,
       jwt,
-      usersIdArray
+      [...game.users.map((user) => user.id), authContext.user.id]
     );
-    setGame(() => {
-      return {
-        ...game,
-        users: [...game.users, authContext.user],
-      };
-    });
-    setIsVoted(true);
+    if (!isResponseOk(response)) 
+      {
+      setGame((prevGame) => ({
+        ...prevGame,
+        users: [...prevGame.users, authContext.user],
+      }));
+      setIsVoted(true);
+      setVoteCount((prevCount) => prevCount + 1);
+    }
   };
 
   return (
@@ -78,9 +86,7 @@ export default function GamePage(props) {
             <div className={Styles["about__vote"]}>
               <p className={Styles["about__vote-amount"]}>
                 За игру уже проголосовали:{" "}
-                <span className={Styles["about__accent"]}>
-                  {game.users.length}
-                </span>
+                <span className={Styles["about__accent"]}>{voteCount}</span>
               </p>
               <button
                 disabled={!authContext.isAuth || isVoted}
